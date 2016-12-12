@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">Party Bus</string>
+    <string name="user_name">User Name</string>
+    <string name="ic_close">Close Icon Animation</string>
+    <string name="cross">Cross</string>
+    <string name="ic_group_close">Group Tick Close</string>
+    <string name="is_student">Are you a student?</string>
+    <string name="password">Password</string>
+    <string name="email_address">Email Address</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="string_hint">Howard University</string>
+    <string name="school_hint">Howard University</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="which_school">What school do you attend?</string>
+    <string-array name="event_types">
+        <item>Parties</item>
+        <item>Concerts</item>
+        <item>Poetry Slams</item>
+        <item>Tournaments</item>
+        <item>Clubs</item>
+        <item>Dummy</item>
+        <item>Field</item>
+        <item>Field</item>
+        <item>Field</item>
+        <item>Field</item>
+        <item>Field</item>
+        <item>Field</item>
+        <item>Field</item>
+        <item>Field</item>
+        <item>Field</item>
+        <item>Field</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_fragment">Login Fragment</string>
+    <string name="interest_fragment">Interest Fragment</string>
+    <string name="next">Next</string>
+    <string name="sign_up_fragment">Sign Up Fragment</string>
+    <string name="login">Log In</string>
+    <string name="keep_me_signed_in">Keep me signed in.</string>
+    <string name="events">Events</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="events_map_fragment">Events Map Fragment</string>
+    <string name="event_fragment">Events Fragment</string>
+    <string name="event_list_fragment">Event List Fragment</string>
+    <string name="event_title">Event Title</string>
+    <string name="event_location">Location</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="event_submission">Event Submission</string>
+    <string name="search_fence">Search Fence</string>
+    <string name="google_maps_key">AIzaSyC8Boh3w4wZp8FGapxQOZCnOMIDO0svrG0</string>
+
+</resources>

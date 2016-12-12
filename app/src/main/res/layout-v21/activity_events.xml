@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/events_coordinator"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:background="@color/colorPrimary"
+        android:id="@+id/event_toolbar"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+    </android.support.v7.widget.Toolbar>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/events_container">
+    </FrameLayout>
+
+</LinearLayout>
+
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:id="@+id/details_card_view"
+    app:cardElevation="10dp"
+    android:layout_gravity="bottom"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="5dp"
+            android:layout_gravity="center_vertical|start"
+            android:layout_centerVertical="true"
+            android:id="@+id/previous_event"
+            android:src="@drawable/ic_skip_previous_black_24dp"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/next_event"
+            android:src="@drawable/ic_skip_next_black_24dp"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
+
+
+</android.support.design.widget.CoordinatorLayout>
