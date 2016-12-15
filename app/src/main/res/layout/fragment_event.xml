@@ -5,7 +5,12 @@
     android:layout_height="match_parent"
     android:id="@+id/event_fragment_container"
     tools:context="momocorp.partybus.Fragments.Eventsfragments.EventFragment"
-    />
+    >
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/view_pager"/>
+</FrameLayout>
 
     <!-- TODO: Update blank fragment layout -->
 
