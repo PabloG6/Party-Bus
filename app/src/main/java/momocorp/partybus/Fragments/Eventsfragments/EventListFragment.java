@@ -1,8 +1,8 @@
 package momocorp.partybus.Fragments.Eventsfragments;
 
-import android.app.FragmentTransaction;
+
 import android.content.Context;
-import android.net.Uri;
+
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
