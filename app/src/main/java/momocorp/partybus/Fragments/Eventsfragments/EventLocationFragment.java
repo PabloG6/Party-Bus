@@ -42,25 +42,23 @@ import momocorp.partybus.R;
  */
 public class EventLocationFragment extends Fragment implements OnMapReadyCallback {
 
-
-    private String mParam1;
-    private String mParam2;
     MapView mapView;
     GoogleMap googleMap;
-    ArrayList<EventInformation> events;
+
     GoogleApiClient googleApiClient;
     CustomGoogleApiClient customGoogleApiClient;
-    SeekBar seekBar;
+
     private EventFragment.EventFragmentListener mListener;
     private Context mContext;
 
 
 
-    public static MapFragment newInstance() {
-        MapFragment fragment = new MapFragment();
+    public static EventLocationFragment newInstance(CustomGoogleApiClient customGoogleApiClient) {
+        EventLocationFragment fragment = new EventLocationFragment();
         Bundle args = new Bundle();
-
+        args.putParcelable("CustomGoogleApiClient", customGoogleApiClient);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -72,14 +70,10 @@ public class EventLocationFragment extends Fragment implements OnMapReadyCallbac
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            customGoogleApiClient =  getArguments().getParcelable("CustomGoogleApiClient");
         }
 
-        customGoogleApiClient = new CustomGoogleApiClient(getActivity());
-        googleApiClient = new GoogleApiClient.Builder(getActivity()).
-                addOnConnectionFailedListener(customGoogleApiClient)
-                .addConnectionCallbacks(customGoogleApiClient).addApi(LocationServices.API).build();
-        googleApiClient.connect();
-        customGoogleApiClient.setGoogleApiClient(googleApiClient);
+
 
     }
 
@@ -92,40 +86,6 @@ public class EventLocationFragment extends Fragment implements OnMapReadyCallbac
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-//        seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
-//        seekBar.setMax(2000);
-//        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                Location location = customGoogleApiClient.getLastLocation();
-//                if (location!=null) {
-//                       EventMapMethods mapMethods = new
-//                            EventMapMethods(location.getLatitude(), location.getLongitude(), progress, getActivity(), googleMap);
-//                    mapMethods.setCircle(location.getLatitude(), location.getLongitude(), progress);
-//                }
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//                // TODO: 10/23/2016 get progress of seekbar and push to firebase for geolocation
-//                try {
-//                    new GetLocations().execute(customGoogleApiClient, seekBar.getProgress(), googleMap).get();
-//                    Log.i("Events", "Events check");
-//
-//
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                } catch (ExecutionException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        });
 
         // TODO: 12/11/2016 create the same search feature but control the search radius behind the scenes
 
@@ -201,6 +161,7 @@ public class EventLocationFragment extends Fragment implements OnMapReadyCallbac
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
         int padding = (int) getActivity().getResources().getDimension(R.dimen.map_margin);
+
         this.googleMap.setPadding(padding, padding, padding, padding);
         this.googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
             @Override

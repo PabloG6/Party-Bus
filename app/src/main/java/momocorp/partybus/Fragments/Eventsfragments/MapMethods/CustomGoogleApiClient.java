@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -28,7 +30,7 @@ import momocorp.partybus.R;
  * Created by Pablo on 10/23/2016.
  */
 public class CustomGoogleApiClient implements ConnectionCallbacks,
-        OnConnectionFailedListener, LocationListener {
+        OnConnectionFailedListener, LocationListener, Parcelable {
     private Location mLastLocation;
     private GoogleApiClient googleApiClient;
     private  Context context;
@@ -48,6 +50,25 @@ public class CustomGoogleApiClient implements ConnectionCallbacks,
 
     }
 
+    protected CustomGoogleApiClient(Parcel in) {
+        mLastLocation = in.readParcelable(Location.class.getClassLoader());
+        locationRequest = in.readParcelable(LocationRequest.class.getClassLoader());
+        fast_interval = in.readLong();
+        norm_interval = in.readLong();
+    }
+
+    public static final Creator<CustomGoogleApiClient> CREATOR = new Creator<CustomGoogleApiClient>() {
+        @Override
+        public CustomGoogleApiClient createFromParcel(Parcel in) {
+            return new CustomGoogleApiClient(in);
+        }
+
+        @Override
+        public CustomGoogleApiClient[] newArray(int size) {
+            return new CustomGoogleApiClient[size];
+        }
+    };
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (googleApiClient != null)
@@ -59,10 +80,7 @@ public class CustomGoogleApiClient implements ConnectionCallbacks,
         Log.i("On Connected", "Connection called");
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        if (mLastLocation!=null){
-            fragmentInterface.updateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
 
-        }
 
 
     }
@@ -88,8 +106,19 @@ public class CustomGoogleApiClient implements ConnectionCallbacks,
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-        if (mLastLocation!=null){
 
-        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeParcelable(mLastLocation, i);
+        parcel.writeParcelable(locationRequest, i);
+        parcel.writeLong(fast_interval);
+        parcel.writeLong(norm_interval);
     }
 }

@@ -1,0 +1,72 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_margin="6dp"
+    android:orientation="vertical"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="6dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#EC407A"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingEnd="12dp"
+        android:paddingStart="16dp"
+        android:paddingTop="36dp">
+
+        <TextView
+            android:id="@+id/event_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Haclyon Days"
+            android:textColor="@color/white"
+            android:textSize="28sp" />
+
+        <TextView
+            android:id="@+id/event_host"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/event_title"
+            android:layout_marginTop="12dp"
+            android:text="Ellie Goulding"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/get_info"
+            android:textSize="16sp"
+            android:padding="14dp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="SEE MORE"
+            android:background="@drawable/see_more"
+            android:textColor="@color/white" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true">
+
+            <ImageView
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:scaleType="centerCrop" />
+            <!--TODO fix this when you actually get images-->
+            <TextView
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:gravity="center"
+                android:text="H"
+                android:id="@+id/first_event_title"
+                android:textColor="@color/white"
+                android:textSize="110dp" />
+        </FrameLayout>
+
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

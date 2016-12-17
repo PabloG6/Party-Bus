@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import momocorp.partybus.Adapters.EventFragmentAdapter;
 import momocorp.partybus.R;
 
 /**
@@ -23,7 +24,7 @@ import momocorp.partybus.R;
  * create an instance of this fragment.
  */
 public class EventFragment extends Fragment implements OnMapReadyCallback {
-    ViewPager viewPager;
+    ViewPager eventPager;
     private String mParam1;
     private String mParam2;
     String event_map_fragment, event_list_fragment;
@@ -60,37 +61,19 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event, container, false);
 
-        {
-            event_map_fragment = getActivity().getResources().getString(R.string.events_map_fragment);
-            event_list_fragment = getActivity().getResources().getString(R.string.event_list_fragment);
-            eventMapFragment = new EventLocationFragment();
-            eventListFragment = new EventListFragment();
-            getChildFragmentManager().beginTransaction().
-                    add(R.id.event_fragment_container, eventMapFragment, event_map_fragment).commit();
 
-        }
+//
+////        EventFragmentAdapter eventFragmentAdapter = new EventFragmentAdapter(getFragmentManager());
+//
+//        eventPager = (ViewPager) view.findViewById(R.id.event_pager);
+//        eventPager.setAdapter(eventFragmentAdapter);
 
 
         return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onChangeFragment() {
 
-        //change fragment depending on
-        if (eventMapShow){
-            getChildFragmentManager().beginTransaction().
-                    replace(R.id.event_fragment_container, eventListFragment, event_list_fragment).commit();
-            eventMapShow = !eventMapShow;
-        } else {
-            getChildFragmentManager().beginTransaction().
-                    replace(R.id.event_fragment_container, eventMapFragment, event_map_fragment).commit();
-            eventMapShow = !eventMapShow;
-
-        }
-
-
-    }
 
     @Override
     public void onAttach(Context context) {
