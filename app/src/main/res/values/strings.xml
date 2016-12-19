@@ -51,5 +51,20 @@
     <string name="event_submission">Event Submission</string>
     <string name="search_fence">Search Fence</string>
     <string name="google_maps_key">AIzaSyC8Boh3w4wZp8FGapxQOZCnOMIDO0svrG0</string>
+    <string name="red_400">#EF5350</string>
+    <string name="blue_400">#42A5F5</string>
+    <string name="pink_400">#EC407A</string>
+    <string name="purple_400">#AB47BC</string>
+    <string name="indigo_400">#5C6BC0</string>
+    <string name="light_blue_400">#29B6F6</string>
+    <string name="cyan_400">#26C6DA</string>
+    <string name="teal_400">#26A69A</string>
+    <string name="green_400">#66BB6</string>
+    <string name="light_green_400">#9CCC65</string>
+    <string name="lime_400">#D4E157</string>
+    <string name="yellow_400">#FFEE58</string>
+    <string name="amber_400">#FFCA28</string>
+    <string name="orange_400">#FFA726</string>
+    <string name="deep_orange_400">#FF7043</string>
 
 </resources>

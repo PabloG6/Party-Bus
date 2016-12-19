@@ -1,14 +1,23 @@
 package momocorp.partybus.Fragments.Eventsfragments;
 
 
+import android.annotation.TargetApi;
 import android.content.Context;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
+import momocorp.partybus.Adapters.EventListAdapter;
+import momocorp.partybus.CustomObjects.EventInformation;
+import momocorp.partybus.Fragments.Eventsfragments.MapMethods.CustomGoogleApiClient;
 import momocorp.partybus.R;
 
 /**
@@ -21,30 +30,18 @@ import momocorp.partybus.R;
  */
 public class EventListFragment extends Fragment {
 
-    private String mParam1;
-    private String mParam2;
-    EventLocationFragment eventMapFragment;
-    EventListFragment eventListFragment;
-    String event_map_fragment, event_list_fragment;
-    private EventListFragmentListener mListener;
-    private FragmentInterface fragmentInterface;
-    private Context mContext;
+    private CustomGoogleApiClient customGoogleApiClient;
 
     public EventListFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EventListFragment.
-     */
-    public static EventListFragment newInstance(String param1, String param2) {
+
+
+    public static EventListFragment newInstance(CustomGoogleApiClient customGoogleApiClient) {
         EventListFragment fragment = new EventListFragment();
         Bundle args = new Bundle();
+        args.putParcelable("CustomGoogleApiClient", customGoogleApiClient);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,6 +50,7 @@ public class EventListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            this.customGoogleApiClient = getArguments().getParcelable("CustomGoogleApiClient");
 
         }
     }
@@ -62,6 +60,11 @@ public class EventListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event_list, container, false);
+        RecyclerView eventListRecycler = (RecyclerView) view.findViewById(R.id.event_list_recycler);
+        EventListAdapter eventListAdapter =
+                new EventListAdapter(new ArrayList<EventInformation>(), customGoogleApiClient, getActivity());
+        eventListRecycler.setAdapter(eventListAdapter);
+        eventListRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return view;
     }
@@ -73,21 +76,13 @@ public class EventListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof EventListFragmentListener) {
-            mListener = (EventListFragmentListener) context;
-            this.mContext = context;
-            fragmentInterface = (FragmentInterface) context;
-        } else {
 
-            throw new RuntimeException(context.toString()
-                    + " must implement EventListFragmentListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+
     }
 
     /**
@@ -101,6 +96,6 @@ public class EventListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface EventListFragmentListener {
-        void changeFragment();
+
     }
 }

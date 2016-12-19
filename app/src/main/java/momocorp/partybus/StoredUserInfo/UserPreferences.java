@@ -9,6 +9,8 @@ import momocorp.partybus.CustomObjects.UserValues;
 /**
  * Created by Pablo on 10/21/2016.
  */
+
+// TODO: 12/17/2016 please get rid of this. no need to store user email and password. 
 public class UserPreferences {
     public static final String PASSWORD = "password";
     public static final String EMAIL = "email";
