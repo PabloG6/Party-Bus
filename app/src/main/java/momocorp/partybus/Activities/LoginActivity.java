@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import momocorp.partybus.Activities.EventsActivity;
@@ -41,44 +42,35 @@ public class LoginActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_login);
         context = this;
         FirebaseApp.initializeApp(context);
+        SharedPreferences sharedPreferences = getSharedPreferences(UserPreferences.UP, Context.MODE_PRIVATE);
+        boolean isFirst = sharedPreferences.getBoolean(UserPreferences.FIRST_TIME, true);
         mAuth = FirebaseAuth.getInstance();
         //if user is using app for first time call sign up
         layout = findViewById(R.id.login_container);
-        UserPreferences userPreferences = new UserPreferences(this);
-        if (userPreferences.isFirstTime()) {
-            Fragment signUpFragment = new SignUpFragment();
-            getFragmentManager().beginTransaction().add(R.id.login_container, signUpFragment,
-                    getResources().getString(R.string.sign_up_fragment))
-                    .addToBackStack(getResources().getString(R.string.sign_up_fragment))
-                    .commit();
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser==null) {
+            if(isFirst) {
+                Fragment signUpFragment = new SignUpFragment();
 
-        } else {
+                getFragmentManager().beginTransaction().add(R.id.login_container, signUpFragment,
+                        getResources().getString(R.string.sign_up_fragment))
+                        .addToBackStack(getResources().getString(R.string.sign_up_fragment))
+                        .commit();
 
-            if(userPreferences.getSignedIn()) {
-                //if true go straight to events
-                SharedPreferences sharedPreferences = getSharedPreferences(UserPreferences.UP, MODE_PRIVATE);
-                mAuth.signInWithEmailAndPassword(sharedPreferences.getString(UserPreferences.EMAIL, "nothing"),
-                        sharedPreferences.getString(UserPreferences.PASSWORD, "nothing")).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Intent intent = new Intent(context, EventsActivity.class);
-                        startActivity(intent);
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                        Snackbar.make(layout, "Wrong email or password. Try again.", Snackbar.LENGTH_LONG);
-                    }
-                });
-
-            } else {
+            }
+             else {
                 Fragment loginFragment = new LoginFragment();
                 getFragmentManager().beginTransaction().add(R.id.login_container, loginFragment,
                         getResources().getString(R.string.sign_up_fragment))
                         .addToBackStack(getResources().getString(R.string.sign_up_fragment))
                         .commit();
+            }
+
+        } else {
+
+           {
+                Intent intent = new Intent(context, EventsActivity.class);
+                startActivity(intent);
             }
         }
 

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/media_loading"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@+id/title"
+        android:visibility="visible">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="true" />
+
+        <TextView
+            android:id="@+id/preview_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progress_bar"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="4dp"
+            android:text="No Preview Available" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/media"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@+id/title"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/first_event_title"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@+id/title"
+        android:background="@color/pink_400"
+        android:gravity="center"
+        android:text="R"
+        android:visibility="invisible"
+        android:textColor="@color/white"
+        android:textSize="180sp" />
+
+
+    <com.google.android.gms.maps.MapView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        map:mapType="normal"
+        android:id="@+id/event_location"
+        android:layout_below="@+id/title"
+        android:layout_alignParentStart="true" />
+
+
+    <LinearLayout
+        android:id="@+id/actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:gravity="end"
+        android:orientation="horizontal"
+        android:layout_below="@+id/media_loading"
+        android:layout_alignParentStart="true">
+
+
+        <ImageButton
+            style="@style/Widget.AppCompat.ImageButton.SocialMedia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/comment_social"
+            android:src="@drawable/ic_comment_grey_700_24dp" />
+
+        <ImageButton
+            android:id="@+id/attending_social"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="6dp"
+
+            android:src="@drawable/ic_people_outline_grey_700_24dp" />
+
+        <ImageButton
+            android:id="@+id/share_social"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="6dp"
+
+            android:src="@drawable/ic_share_grey_700_24dp"
+
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/actions">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@drawable/ic_people_black_18dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="188 attending"
+            android:id="@+id/number_attending"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/title"
+            android:layout_margin="6dp"
+            android:background="@drawable/stock_image_background"
+            android:backgroundTint="@color/pink_400"
+            android:gravity="center"
+            android:id="@+id/title_first_letter"
+            android:layout_gravity="center_vertical"
+            android:text="R"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/title_of_event"
+            style="@style/Base.TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="ReggaeFest" />
+    </LinearLayout>
+
+</RelativeLayout>

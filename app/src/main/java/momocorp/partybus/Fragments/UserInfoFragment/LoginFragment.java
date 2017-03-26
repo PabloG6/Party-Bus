@@ -162,19 +162,18 @@ public class LoginFragment extends Fragment {
         firebaseAuth.signInWithEmailAndPassword(emailToString, passWordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                UserPreferences userPreferences = new UserPreferences(getActivity());
+
 
                 //set the current user option.
                 if (keepSignedIn.isChecked()) {
-                    userPreferences.setSignedIn(keepSignedIn.isChecked());
 
                     SharedPreferences sharedPreferences = getActivity().
                             getSharedPreferences(UserPreferences.UP, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(UserPreferences.EMAIL, emailToString);
-                    editor.putString(UserPreferences.PASSWORD, passWordString);
+                    editor.putBoolean(UserPreferences.KSI, true);
                     editor.apply();
                 }
+
                 mListener.logInFragmentInteraction();
 
             }

@@ -40,6 +40,7 @@ import momocorp.partybus.R;
  */
 public class EventSubmissionFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
+    //todo change the style of the placeautocompletefragment
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";

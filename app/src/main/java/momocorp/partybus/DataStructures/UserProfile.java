@@ -97,7 +97,6 @@ public class UserProfile {
                 }
                 else {
                     if (!emailAddress.equals("nothing")){
-                        // TODO: 10/26/2016 wtf am i doing lol this logic is sooo bad
                         firebaseAuth.signInWithEmailAndPassword(emailAddress, passWord).
                                 addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override

@@ -107,8 +107,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/sign_up_button"
         android:text="@string/sign_up"
-        android:textColor="@android:color/white"
-        style="@style/Widget.AppCompat.Button.Colored"
+        style="@style/CustomButton"
         />
     <CheckBox
         android:layout_width="wrap_content"

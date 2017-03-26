@@ -1,6 +1,7 @@
 package momocorp.partybus.Fragments.UserInfoFragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -108,7 +109,7 @@ public class SignUpFragment extends Fragment {
         lastName = (TextInputEditText) mainView.findViewById(R.id.input_last_name);
         userName = (TextInputEditText) mainView.findViewById(R.id.input_user_name);
         password = (TextInputEditText) mainView.findViewById(R.id.input_password);
-
+        context = getActivity();
         keepMeSignedUp = (CheckBox) mainView.findViewById(R.id.keep_me_signed_up);
 
         emailAddress = (TextInputEditText) mainView.findViewById(R.id.input_user_email);
@@ -192,8 +193,12 @@ public class SignUpFragment extends Fragment {
         keepMeSignedUp.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                UserPreferences userPreferences = new UserPreferences(getActivity());
-                userPreferences.setSignedIn(b);
+                SharedPreferences.Editor editor =  context.
+                        getSharedPreferences(UserPreferences.UP, Context.MODE_PRIVATE).edit();
+                editor.putBoolean(UserPreferences.KSI, b);
+                editor.apply();
+
+
             }
         });
 
@@ -241,66 +246,60 @@ public class SignUpFragment extends Fragment {
         final String userName = this.userName.getText().toString();
 
 
+                firebaseAuth.createUserWithEmailAndPassword(emailAddress, password).
+                        addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                signUpButton.setEnabled(false);
+                                if (task.isSuccessful()) {
+
+                                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                                    assert firebaseUser != null;
+                                    String UID = firebaseUser.getUid();
 
 
-            firebaseAuth.createUserWithEmailAndPassword(emailAddress, password).
-                    addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            signUpButton.setEnabled(false);
-                            if (task.isSuccessful()) {
+                                    final UserProfile userProfile = new UserProfile(userName, firstName, lastName, UID);
+                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                                    databaseReference.child("users").child(UID).setValue(userProfile).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
 
-                                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                                assert firebaseUser != null;
-                                String UID = firebaseUser.getUid();
-
-
-                                final UserProfile userProfile = new UserProfile(userName, firstName, lastName, UID);
-                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                                databaseReference.child("users").child(UID).setValue(userProfile).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-
-                                        //ask for information about completion before destroying the fragment
-                                        if (task.getResult() != null)
-                                            Log.i("Task completed", "result: " + task.getResult().toString());
-                                        mListener.triggerInterestFragment();
+                                            SharedPreferences.Editor editor = context.getSharedPreferences(UserPreferences.UP, Context.MODE_PRIVATE).edit();
+                                            editor.putBoolean(UserPreferences.FIRST_TIME, false);
+                                            editor.apply();
+                                            //ask for information about completion before destroying the fragment
+                                            if (task.getResult() != null)
+                                                Log.i("Task completed", "result: " + task.getResult().toString());
+                                            mListener.triggerInterestFragment();
 
 
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.i("Task failed", "result: " + e.getMessage());
-                                    }
-                                });
-                                Snackbar.make(mainView, "Successful creation", Snackbar.LENGTH_LONG).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.i("Task failed", "result: " + e.getMessage());
+                                        }
+                                    });
+                                    Snackbar.make(mainView, "Successful creation", Snackbar.LENGTH_LONG).show();
 
-                                //// TODO: 10/21/2016 change fragment to interest fragment
+                                    //// TODO: 10/21/2016 change fragment to interest fragment
 
+                                    //start interest fragment;
 
-                                //start interest fragment;
-
-                            } else {
-
-                                //// TODO: 10/21/2016 create message explaining why sign in unsuccessful
-                                if (mainView != null)
-                                    Snackbar.make(mainView, "Unsuccessful creation", Snackbar.LENGTH_LONG).show();
-                                Log.i("Unsuccessful Creation", "error: " + task.getResult().toString());
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (e instanceof FirebaseAuthUserCollisionException) {
+                            if (mainView != null) {
+                                Snackbar.make(mainView, "A user exists who already has that account", Snackbar.LENGTH_SHORT).show();
 
                             }
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    if (e instanceof FirebaseAuthUserCollisionException){
-                        if (mainView!=null){
-                            Snackbar.make(mainView, "A user exists who already has that account", Snackbar.LENGTH_SHORT).show();
-
-                        }
                     }
-                }
-            });
+                });
+
         }
 
     public interface SignUpFragmentListener {

@@ -1,4 +1,4 @@
-package momocorp.partybus.Fragments.Eventsfragments;
+package momocorp.partybus.Fragments.Eventsfragments.FragmentInterfaces;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -7,4 +7,5 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public interface FragmentInterface {
     void updateCamera(LatLng latLng);
+
 }

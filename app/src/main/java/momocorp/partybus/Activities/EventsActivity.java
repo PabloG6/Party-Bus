@@ -5,7 +5,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.pm.PackageManager;
 import android.os.PersistableBundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -21,33 +23,53 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.ArrayList;
-
-import momocorp.partybus.Adapters.EventFragmentAdapter;
+import momocorp.partybus.Fragments.Eventsfragments.AddFragment;
 import momocorp.partybus.Fragments.Eventsfragments.EventFragment;
 import momocorp.partybus.Fragments.Eventsfragments.EventListFragment;
-import momocorp.partybus.Fragments.Eventsfragments.EventLocationFragment;
+import momocorp.partybus.Fragments.Eventsfragments.EventListFragment.EventListFragmentListener;
 import momocorp.partybus.Fragments.Eventsfragments.EventSubmissionFragment;
-import momocorp.partybus.Fragments.Eventsfragments.FragmentInterface;
+import momocorp.partybus.Fragments.Eventsfragments.FragmentInterfaces.FragmentInterface;
 import momocorp.partybus.Fragments.Eventsfragments.MapMethods.CustomGoogleApiClient;
 import momocorp.partybus.R;
 
 
-public class EventsActivity extends AppCompatActivity implements EventSubmissionFragment.EventSubmissionListener, FragmentInterface {
+public class EventsActivity extends AppCompatActivity
+        implements EventSubmissionFragment.EventSubmissionListener, FragmentInterface, EventListFragmentListener {
     String eventSubFragmentTag;
-    EventFragment eventFragment;
-    ;
+    Toolbar toolbar;
     CustomGoogleApiClient customGoogleApiClient;
     GoogleApiClient googleApiClient;
+    Fragment savedContent;
     ViewPager eventPager;
 
 
+    public enum Fragments {
+        ADDEVENT("AddFragment"),
+        EVENTMAP("EventMaps"),
+        EVENTLIST("EventList"),
+        SAVED("Saved");
+
+        String fragmentTag;
+
+        Fragments(String fragment) {
+            this.fragmentTag = fragment;
+        }
+
+        public String getTag() {
+            return fragmentTag;
+        }
+    }
 
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
-        // TODO: 12/17/2016 save the information when out of view
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getFragmentManager().putFragment(outState, Fragments.SAVED.name(), savedContent);
     }
 
     @Override
@@ -55,80 +77,102 @@ public class EventsActivity extends AppCompatActivity implements EventSubmission
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
 
-        //connect api client if it's not connected
-        customGoogleApiClient = new CustomGoogleApiClient(this);
+
+        customGoogleApiClient = new CustomGoogleApiClient(this, this);
         googleApiClient = new GoogleApiClient.Builder(this).
                 addOnConnectionFailedListener(customGoogleApiClient)
                 .addConnectionCallbacks(customGoogleApiClient).addApi(LocationServices.API).build();
         googleApiClient.connect();
         customGoogleApiClient.setGoogleApiClient(googleApiClient);
 
-        eventFragment = new EventFragment();
+
         eventSubFragmentTag = getResources().getString(R.string.event_submission);
-        ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(EventLocationFragment.newInstance(customGoogleApiClient));
-        fragments.add(EventListFragment.newInstance(customGoogleApiClient));
+        toolbar = (Toolbar) findViewById(R.id.event_toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle(R.string.app_name);
 
 
-        EventFragmentAdapter eventFragmentAdapter = new EventFragmentAdapter(getFragmentManager(), fragments);
-
-        eventPager = (ViewPager) findViewById(R.id.event_pager);
-        eventPager.setAdapter(eventFragmentAdapter);
-        eventPager.setOffscreenPageLimit(2);
-
-
-        //// TODO: 10/22/2016 check if fragment is in container
-
-//        getFragmentManager().beginTransaction().add(R.id.events_container, eventFragment,
-//                eventFragmentTag)
-//                .commit();
-
-
-    }
-
-
-    public void requestPermissions(GoogleMap googleMap) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            googleMap.setMyLocationEnabled(true);
-
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    getResources().getInteger(R.integer.location));
         }
+        if (savedInstanceState == null) {
+            EventListFragment eventListFragment = EventListFragment.newInstance(customGoogleApiClient);
+            savedContent = eventListFragment;
+            getFragmentManager()
+                    .beginTransaction().
+                    add(R.id.event_pager,
+                            eventListFragment,
+                            Fragments.EVENTLIST.name()).
+                    addToBackStack(Fragments.EVENTLIST.name()).commit();
+        } else {
+            savedContent = getFragmentManager().getFragment(savedInstanceState,
+                    Fragments.SAVED.name());
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.event_pager, savedContent)
+                    .commit();
+        }
+
+
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i("OnRequestPermissions", "request permissions");
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             //todo flesh out toolbar
+            case R.id.add_event:
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.event_pager,
+                                AddFragment.newInstance(customGoogleApiClient),
+                                Fragments.ADDEVENT.name()).commit();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
+    public void onBackPressed() {
+
+        FragmentManager fm = getFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
 
     @Override
     public void updateCamera(LatLng latLng) {
-        eventFragment.updateCamera(latLng);
+
     }
 
     @Override
     public void onFragmentInteraction() {
 
     }
+
+    @Override
+    public void addEvent() {
+        if (eventPager.isShown()) {
+            eventPager.setVisibility(View.GONE);
+
+            getFragmentManager().beginTransaction().add(R.id.container, AddFragment.newInstance(customGoogleApiClient))
+                    .addToBackStack(Fragments.ADDEVENT.getTag()).commit();
+
+        }
+    }
+
 }

@@ -4,19 +4,23 @@ import android.Manifest;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.location.Location;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
+
+import momocorp.partybus.Fragments.Eventsfragments.FragmentInterfaces.FragmentInterface;
+import momocorp.partybus.misc.ID;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ImageButton;
 import android.widget.Toast;
+
 import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
@@ -30,6 +34,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +48,7 @@ import momocorp.partybus.CustomObjects.EventInformation;
 import momocorp.partybus.Fragments.Eventsfragments.MapMethods.CustomGoogleApiClient;
 import momocorp.partybus.Fragments.Eventsfragments.MapMethods.GetLocations;
 import momocorp.partybus.R;
-import momocorp.partybus.misc.ColorEnum;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,42 +63,22 @@ public class EventLocationFragment extends Fragment implements OnMapReadyCallbac
 
     MapView mapView;
     GoogleMap googleMap;
-
-    ArrayList<PolylineOptions> routes = new ArrayList<>();
+    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+    HashMap<String, PolylineOptions> routes = new HashMap<>();
     CustomGoogleApiClient customGoogleApiClient;
-
-    private EventFragment.EventFragmentListener mListener;
-    private Context mContext;
-    Polyline line;
+    Polyline visibleLine;
     ImageButton next_event_button;
     ImageButton previous_event_button;
-    public ArrayList<EventInformation> events;
-    RoutingListener routingListener = new RoutingListener() {
-        @Override
-        public void onRoutingFailure(RouteException e) {
+    int routeCount = 0;
+    EventInformation eventInformation;
+    ArrayList<EventInformation> events = new ArrayList<>();
 
-        }
-
-        @Override
-        public void onRoutingStart() {
-
-        }
-
-        @Override
-        public void onRoutingSuccess(ArrayList<Route> arrayList, int i) {
-
-        }
-
-        @Override
-        public void onRoutingCancelled() {
-
-        }
-    };
 
     public static EventLocationFragment newInstance(CustomGoogleApiClient customGoogleApiClient) {
         EventLocationFragment fragment = new EventLocationFragment();
         Bundle args = new Bundle();
-        args.putParcelable("CustomGoogleApiClient", customGoogleApiClient);
+
+        args.putParcelable(ID.CUSTOMCLIENT.name(), customGoogleApiClient);
         fragment.setArguments(args);
 
         return fragment;
@@ -103,7 +92,7 @@ public class EventLocationFragment extends Fragment implements OnMapReadyCallbac
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            customGoogleApiClient = getArguments().getParcelable("CustomGoogleApiClient");
+            customGoogleApiClient = getArguments().getParcelable(ID.CUSTOMCLIENT.name());
         }
 
     }
@@ -118,14 +107,15 @@ public class EventLocationFragment extends Fragment implements OnMapReadyCallbac
         next_event_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                focusPoint();
+                focusPoint(true);
             }
         });
 
         previous_event_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                focusPoint();
+                focusPoint(false);
+
             }
         });
         mapView = (MapView) view.findViewById(R.id.event_map);
@@ -139,10 +129,41 @@ public class EventLocationFragment extends Fragment implements OnMapReadyCallbac
 
     }
 
-    private void focusPoint() {
+    private void focusPoint(boolean forward) {
         //change the focus point by counting through the array list and executing a route
-        //how the fuck do i do this lmao
-        
+        //how the fuck do i do this
+        Location myLocation = customGoogleApiClient.getLastLocation();
+
+
+        if (events.size()!=0){
+            eventInformation = events.get(routeCount);
+
+            LatLng eventLat = new LatLng(eventInformation.getLatitude(), eventInformation.getLongitude());
+            LatLng myLat = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            String pushId = eventInformation.getPushID();
+            if(routes.get(pushId)!=null){
+                PolylineOptions polylineOptions = routes.get(pushId);
+                if (visibleLine!=null && visibleLine.isVisible()){
+                    visibleLine.remove();
+                    visibleLine = googleMap.addPolyline(polylineOptions);
+                }
+            } else {
+                Routing routing = new Routing.Builder().waypoints(myLat, eventLat).
+                        withListener(this).travelMode(AbstractRouting.TravelMode.DRIVING).build();
+                routing.execute();
+            }
+
+        }
+
+       try {
+           if (forward)
+               routeCount = (routeCount+1) %events.size();
+           else
+               routeCount = Math.abs((routeCount -1) % events.size());
+
+       } catch (ArithmeticException ex){
+           ex.printStackTrace();
+       }
     }
 
     @Override
@@ -152,12 +173,6 @@ public class EventLocationFragment extends Fragment implements OnMapReadyCallbac
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction();
-        }
-    }
 
     @Override
     public void onStart() {
@@ -168,13 +183,7 @@ public class EventLocationFragment extends Fragment implements OnMapReadyCallbac
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof EventFragment.EventFragmentListener) {
-            mListener = (EventFragment.EventFragmentListener) context;
-            mContext = context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement EventLocationInterface");
-        }
+
     }
 
     @Override
@@ -206,7 +215,7 @@ public class EventLocationFragment extends Fragment implements OnMapReadyCallbac
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+
     }
 
     @Override
@@ -215,16 +224,26 @@ public class EventLocationFragment extends Fragment implements OnMapReadyCallbac
         int padding = (int) getActivity().getResources().getDimension(R.dimen.map_margin);
 
         this.googleMap.setPadding(padding, padding, padding, padding);
-        final GetLocations getLocations = new GetLocations(routingListener);
-        getLocations.setListener(this);
+
 
         this.googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
             public boolean onMyLocationButtonClick() {
                 // TODO: 12/12/2016 find new places
-                if (getLocations.getStatus() == AsyncTask.Status.FINISHED)
-                    getLocations.execute(customGoogleApiClient, googleMap);
+                reference.child("events").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        GetLocations getLocations = new GetLocations(customGoogleApiClient, googleMap);
+                        getLocations.setListener(EventLocationFragment.this);
+                        getLocations.setDataSnapShot(dataSnapshot);
+                        getLocations.execute();
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
                 return false;
             }
         });
@@ -282,54 +301,84 @@ public class EventLocationFragment extends Fragment implements OnMapReadyCallbac
                 googleMap.setMyLocationEnabled(true);
 
 
+
             }
         }
 
 
     }
 
+
+
     @Override
-    public void setLocations(HashMap<String, EventInformation> events) {
-        // TODO: 12/18/2016 implement this instead
+    public void setLocations(EventInformation event) {
+        /**
+         * find
+         */
+        this.events.add(event);
+
     }
 
     @Override
-    public void setLocations(ArrayList<EventInformation> events) {
-        this.events = events;
+    public void startRoutes(ArrayList<EventInformation> events) {
+        /*get initial location*/
+        // TODO: 12/19/2016 order by closest place
+        // TODO: 12/19/2016 check how to find first value in hashmap
 
-       EventInformation eventInformation = events.get(0);
-            LatLng myLocation = new LatLng(customGoogleApiClient.getLastLocation().
-                    getLatitude(), customGoogleApiClient.getLastLocation().getLongitude());
-            LatLng eventLocation = new LatLng(eventInformation.getLatitude(),
-                    eventInformation.getLongitude());
+        if(events.size()!=0) {
+
+            eventInformation = events.get(0);
+            LatLng event = new LatLng(eventInformation.getLatitude(), eventInformation.getLongitude());
+            Location myLoc = customGoogleApiClient.getLastLocation();
+            LatLng myLat = new LatLng(myLoc.getLatitude(), myLoc.getLongitude());
+
             Routing routing = new Routing.Builder().
-                    travelMode(AbstractRouting.TravelMode.WALKING).withListener(this)
-                    .waypoints(myLocation, eventLocation).build();
+                    travelMode(AbstractRouting.TravelMode.DRIVING).
+                    key(getResources().
+                            getString(R.string.google_api_key)).withListener(this)
+                    .waypoints(myLat, event).build();
             routing.execute();
-
-
+            // TODO: 12/19/2016 make own routing library or modify this guy's
+        } else {
+            // TODO: 12/19/2016 figure out something to tell the user if there are no locations
+            Toast.makeText(getActivity(), "No events near your area", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
     public void onRoutingFailure(RouteException e) {
-
+        Log.i("Routing failure", "failure: "+e.getMessage());
     }
 
     @Override
     public void onRoutingStart() {
+        // TODO: 12/19/2016 set up progress dialog
+        Log.i("Routing start", "start");
 
     }
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> arrayList, int i) {
+        Route route = arrayList.get(i);
+        PolylineOptions polylineOptions = new PolylineOptions();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            polylineOptions.color(getResources().getColor(R.color.blue_300, null));
+        } else {
+            polylineOptions.color(getResources().getColor(R.color.blue_300));
+        }
+        polylineOptions.addAll(route.getPoints());
+        routes.put(eventInformation.getPushID(), polylineOptions);
+
+       if(visibleLine!=null && visibleLine.isVisible())
+           visibleLine.remove();
+       visibleLine= googleMap.addPolyline(polylineOptions);
 
     }
 
+
     @Override
     public void onRoutingCancelled() {
-
+        Log.i("Routing cancelled", "cancelled");
     }
 
 

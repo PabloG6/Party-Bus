@@ -1,6 +1,7 @@
 package momocorp.partybus.Fragments.Eventsfragments.MapMethods;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -21,12 +22,11 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 
 
 import java.util.List;
 
-import momocorp.partybus.Fragments.Eventsfragments.FragmentInterface;
+import momocorp.partybus.Fragments.Eventsfragments.FragmentInterfaces.FragmentInterface;
 import momocorp.partybus.R;
 
 /**
@@ -41,8 +41,9 @@ public class CustomGoogleApiClient implements ConnectionCallbacks,
     long fast_interval;
     long norm_interval;
     FragmentInterface fragmentInterface;
-
-    public CustomGoogleApiClient(Context context) {
+    Activity activity;
+    int locationRequestCode = 0;
+    public CustomGoogleApiClient(Context context, Activity activity) {
         this.context = context;
         locationRequest = new LocationRequest();
         fast_interval = (long) context.getResources().getInteger(R.integer.fast_interval_speed);
@@ -50,6 +51,7 @@ public class CustomGoogleApiClient implements ConnectionCallbacks,
         locationRequest.setFastestInterval(fast_interval);
         locationRequest.setInterval(norm_interval);
         fragmentInterface = (FragmentInterface) context;
+        this.activity = activity;
 
 
     }
@@ -77,7 +79,9 @@ public class CustomGoogleApiClient implements ConnectionCallbacks,
     public void onConnected(@Nullable Bundle bundle) {
         if (googleApiClient != null)
             if (ActivityCompat.
-                    checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, locationRequestCode);
 
 
             }
@@ -90,10 +94,17 @@ public class CustomGoogleApiClient implements ConnectionCallbacks,
     }
 
     /**
-     *
      * @return mLastLocation
      */
     public Location getLastLocation() {
+        if(mLastLocation==null){
+            if (getLastKnownLocation()!=null){
+                mLastLocation = getLastKnownLocation();
+                return mLastLocation;
+            } else {
+                mLastLocation = getLastLocationFromProvider();
+            }
+        }
         return mLastLocation;
     }
 
@@ -118,7 +129,6 @@ public class CustomGoogleApiClient implements ConnectionCallbacks,
     }
 
     /**
-     *
      * @returns last known location with fused location service provider
      */
     public Location getLastKnownLocation() {
@@ -131,8 +141,12 @@ public class CustomGoogleApiClient implements ConnectionCallbacks,
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                    locationRequestCode);
 
         }
+        Log.i("location", "last known location");
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
         if (mLastLocation != null) {
@@ -145,24 +159,21 @@ public class CustomGoogleApiClient implements ConnectionCallbacks,
     }
 
     /**
-     *
      * @return last known location based on other application locations
      */
     public Location getLastLocationFromProvider() {
         LocationManager mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = mLocationManager.getProviders(true);
+        Log.i("location", "last location from provider");
         Location bestLocation = null;
         for (String provider : providers) {
             if (ActivityCompat.checkSelfPermission(context,
                     Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                        locationRequestCode);
+
             }
             Location l = mLocationManager.getLastKnownLocation(provider);
 
@@ -181,6 +192,7 @@ public class CustomGoogleApiClient implements ConnectionCallbacks,
         }
         return bestLocation;
     }
+
     @Override
     public int describeContents() {
         return 0;
