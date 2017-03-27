@@ -7,11 +7,14 @@ import android.view.accessibility.AccessibilityManager;
  */
 public enum ID {
 
-        CUSTOMCLIENT("CUSTOMCLIENT"),
-    TEST("NOTHING");
-        String s;
+    CUSTOMCLIENT("CUSTOMCLIENT"),
+    addFragmentAdapter("3-3-493dkgx"),
+    eventInfo("39dkk2-vsdka"),
 
-        ID(String s) {
-            this.s = s;
-        }
+    TEST("NOTHING");
+    String s;
+
+    ID(String s) {
+        this.s = s;
+    }
 }

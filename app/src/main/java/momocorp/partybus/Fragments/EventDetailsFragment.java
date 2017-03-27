@@ -16,15 +16,16 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.Switch;
 
+import momocorp.partybus.Adapters.AddFragmentPagerAdapter;
 import momocorp.partybus.CustomObjects.EventInformation;
 import momocorp.partybus.R;
+import momocorp.partybus.misc.ID;
 
 public class EventDetailsFragment extends Fragment {
     EventInformation eventInformation;
-   static String eventArgs = "event args";
+    EventInformation.Interface eventInfoInterface;
 
     private OnFragmentInteractionListener mListener;
 
@@ -32,10 +33,11 @@ public class EventDetailsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static EventDetailsFragment newInstance(EventInformation eventInformation) {
+    public static EventDetailsFragment newInstance(EventInformation eventInformation, AddFragmentPagerAdapter addFragmentPagerAdapter) {
         EventDetailsFragment fragment = new EventDetailsFragment();
         Bundle args = new Bundle();
-        args.putParcelable(eventArgs, eventInformation);
+        args.putParcelable(ID.addFragmentAdapter.name(), eventInformation);
+        args.putParcelable(ID.eventInfo.name(), eventInformation);
         return fragment;
     }
 
@@ -43,6 +45,8 @@ public class EventDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            eventInfoInterface = (EventInformation.Interface) getArguments().get(ID.addFragmentAdapter.name());
+            eventInformation = (EventInformation) getArguments().get(ID.eventInfo.name());
 
         }
     }
@@ -130,6 +134,8 @@ public class EventDetailsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        eventInfoInterface.setEventInformation(eventInformation);
+
 
     }
 

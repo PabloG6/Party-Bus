@@ -4,9 +4,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Parcelable;
 import android.support.design.widget.TextInputEditText;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import momocorp.partybus.Adapters.AddFragmentPagerAdapter;
 import momocorp.partybus.CustomObjects.EventInformation;
 import momocorp.partybus.Fragments.Eventsfragments.MapMethods.CustomGoogleApiClient;
 import momocorp.partybus.R;
@@ -39,8 +42,10 @@ public class AddFragment extends Fragment {
 
     ArrayList<String> tags = new ArrayList<>();
     AutoCompleteTextView hashTags;
-
+    EventInformation.Interface eventInfoInterface;
     CustomGoogleApiClient customGoogleApiClient;
+
+    EventInformation eventInformation;
 
     public AddFragment() {
         // Required empty public constructor
@@ -55,8 +60,12 @@ public class AddFragment extends Fragment {
         return fragment;
     }
 
-    public static AddFragment newInstance() {
+    public static AddFragment newInstance(EventInformation eventInfo, AddFragmentPagerAdapter addFragmentPagerAdapter) {
         AddFragment fragment = new AddFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(ID.addFragmentAdapter.name(), addFragmentPagerAdapter);
+        args.putParcelable(ID.eventInfo.name(), eventInfo);
+
         return fragment;
     }
 
@@ -64,7 +73,10 @@ public class AddFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            customGoogleApiClient = getArguments().getParcelable(ID.CUSTOMCLIENT.name());
+            Log.i("Add fragment debug", "oncreate called");
+            customGoogleApiClient = (CustomGoogleApiClient) getArguments().getParcelable(ID.CUSTOMCLIENT.name());
+            eventInformation = (EventInformation) getArguments().getParcelable(ID.eventInfo.name());
+            eventInfoInterface = (EventInformation.Interface) getArguments().getParcelable(ID.addFragmentAdapter.name());
         }
     }
 
@@ -73,7 +85,7 @@ public class AddFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        final EventInformation eventInformation = new EventInformation();
+
         final View view = inflater.inflate(R.layout.fragment_add, container, false);
         PlaceAutocompleteFragment placeFragment = (PlaceAutocompleteFragment)
                 getChildFragmentManager().findFragmentById(R.id.search_place);
@@ -93,6 +105,7 @@ public class AddFragment extends Fragment {
             public void afterTextChanged(Editable editable) {
                 eventInformation.setTitle(editable.toString());
 
+
             }
         });
         placeFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -111,10 +124,6 @@ public class AddFragment extends Fragment {
             }
         });
 
-
-        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("events");
-        final String pushId = reference.push().getKey();
-        eventInformation.setPushID(pushId);
         return view;
     }
 
@@ -130,6 +139,11 @@ public class AddFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+
+        //pass updated event info via interface
+        if (eventInfoInterface != null) {
+            eventInfoInterface.setEventInformation(eventInformation);
+        }
 
     }
 

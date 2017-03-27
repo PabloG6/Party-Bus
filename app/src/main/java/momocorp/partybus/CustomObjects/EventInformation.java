@@ -126,6 +126,10 @@ public class EventInformation implements Parcelable{
         parcel.writeInt(age);
         parcel.writeDouble(price);
     }
+    //interface for EventInformation
+    public interface Interface {
+        void setEventInformation(EventInformation eventInformation);
+    }
 
     public static class Date {
         private int startMonth;

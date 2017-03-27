@@ -1,5 +1,6 @@
 package momocorp.partybus.Activities;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,10 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import java.util.ArrayList;
+
 import momocorp.partybus.Adapters.AddFragmentPagerAdapter;
+import momocorp.partybus.CustomObjects.EventInformation;
+import momocorp.partybus.Fragments.AddFragment;
+import momocorp.partybus.Fragments.EventDetailsFragment;
 import momocorp.partybus.R;
 
 public class AddActivity extends AppCompatActivity {
+
+    private EventInformation eventInformation = new EventInformation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +29,7 @@ public class AddActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ViewPager viewPager = (ViewPager) findViewById(R.id.add_viewpager);
+        viewPager.setOffscreenPageLimit(4);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.add_tab_layout);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -38,7 +47,13 @@ public class AddActivity extends AppCompatActivity {
 
             }
         });
+        ArrayList<Fragment> fragments = new ArrayList<>();
+
         AddFragmentPagerAdapter addFragPagerAapter = new AddFragmentPagerAdapter(getFragmentManager());
+        fragments.add(AddFragment.newInstance(eventInformation, addFragPagerAapter));
+        fragments.add(EventDetailsFragment.newInstance(eventInformation, addFragPagerAapter));
+
+        addFragPagerAapter.setFragments(fragments);
         viewPager.setAdapter(addFragPagerAapter);
         tabLayout.setupWithViewPager(viewPager, true);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
