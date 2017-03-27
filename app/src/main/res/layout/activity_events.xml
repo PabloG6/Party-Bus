@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/events_coordinator"
-    >
-    <LinearLayout
+    android:background="@color/white">
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
         <android.support.v7.widget.Toolbar
+            android:id="@+id/event_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            android:background="@color/colorPrimary"
-            android:id="@+id/event_toolbar"
-            android:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            android:layout_gravity="top"
+            android:elevation="4dp"
+            app:theme="@style/ToolBarTheme"
+            app:title="@string/app_name" />
+    </android.support.design.widget.AppBarLayout>
 
-        </android.support.v7.widget.Toolbar>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/events_container">
-        </FrameLayout>
+    <FrameLayout
+        android:id="@+id/event_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    </LinearLayout>
+
 
 
 

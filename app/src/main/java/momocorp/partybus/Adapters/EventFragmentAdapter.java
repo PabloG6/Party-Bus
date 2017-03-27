@@ -15,10 +15,11 @@ import momocorp.partybus.Fragments.Eventsfragments.EventLocationFragment;
 public class EventFragmentAdapter extends FragmentPagerAdapter {
     ArrayList<Fragment> fragments;
     String[] titles = {"Events", "Lists"};
-    public EventFragmentAdapter(FragmentManager fm, ArrayList<Fragment> fragments) {
+
+    public EventFragmentAdapter(android.app.FragmentManager fm) {
         super(fm);
-        this.fragments = fragments;
     }
+
 
     @Override
     public Fragment getItem(int position) {

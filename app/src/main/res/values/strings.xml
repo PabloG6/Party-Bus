@@ -66,5 +66,6 @@
     <string name="amber_400">#FFCA28</string>
     <string name="orange_400">#FFA726</string>
     <string name="deep_orange_400">#FF7043</string>
+    <string name="title_activity_add">AddActivity</string>
 
 </resources>

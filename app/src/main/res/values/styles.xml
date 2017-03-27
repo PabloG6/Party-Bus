@@ -17,7 +17,7 @@
     </style>
 
 
-    <style name="EditTextCustom">
+    <style parent="Widget.AppCompat.EditText" name="EditTextCustom">
         <item name="android:layout_marginTop">5dp</item>
     </style>
 
@@ -36,4 +36,17 @@
     </style>
 
     <style name="ToolBarTheme"></style>
+    <style name="CustomEditTtextTheme" parent="EditTextCustom">
+        <item name="colorControlActivated">@color/activated</item>
+        <item name="colorControlHighlight">@color/highlighted</item>
+        <item name="colorControlNormal">@color/colorNormal</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.TextInputLayout"></style>
+
+    <style name="EditTextCustom.EditTextTheme.Money">
+        <item name="colorControlActivated">#FFFFFF</item>
+        <item name="colorControlHighlight">#FFFFFF</item>
+        <item name="colorControlNormal">@color/colorNormal</item>
+    </style>
 </resources>

@@ -1,9 +1,14 @@
 package momocorp.partybus.CustomObjects;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.lang.reflect.ParameterizedType;
+
 /**
  * Created by Pablo on 10/24/2016.
  */
-public class EventInformation {
+public class EventInformation implements Parcelable{
     private double latitude;
     private double longitude;
     private String address;
@@ -11,6 +16,28 @@ public class EventInformation {
     String pushID;
     private int age;
 
+
+    protected EventInformation(Parcel in) {
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+        address = in.readString();
+        title = in.readString();
+        pushID = in.readString();
+        age = in.readInt();
+        price = in.readDouble();
+    }
+
+    public static final Creator<EventInformation> CREATOR = new Creator<EventInformation>() {
+        @Override
+        public EventInformation createFromParcel(Parcel in) {
+            return new EventInformation(in);
+        }
+
+        @Override
+        public EventInformation[] newArray(int size) {
+            return new EventInformation[size];
+        }
+    };
 
     public int getAge() {
         return age;
@@ -82,6 +109,22 @@ public class EventInformation {
 
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeDouble(latitude);
+        parcel.writeDouble(longitude);
+        parcel.writeString(address);
+        parcel.writeString(title);
+        parcel.writeString(pushID);
+        parcel.writeInt(age);
+        parcel.writeDouble(price);
     }
 
     public static class Date {

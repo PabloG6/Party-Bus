@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style parent="Widget.AppCompat.EditText" name="EditTextCustom">
+        <item name="android:layout_marginTop">5dp</item>
+    </style>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -42,6 +45,13 @@
 
     <style name="CustomButton" parent="@style/Widget.AppCompat.Button.Colored">
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.TextInputLayout"></style>
+    <style name="EditTextCustom.EditTextTheme" parent="EditTextCustom">
+        <item name="colorControlActivated">@color/activated</item>
+        <item name="colorControlHighlight">@color/highlighted</item>
+        <item name="colorControlNormal">@color/colorNormal</item>
     </style>
 
 </resources>

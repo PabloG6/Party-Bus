@@ -1,14 +1,10 @@
 package momocorp.partybus.Activities;
 
-import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,11 +16,11 @@ import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.GoogleMap;
+
 import com.google.android.gms.maps.model.LatLng;
 
-import momocorp.partybus.Fragments.Eventsfragments.AddFragment;
-import momocorp.partybus.Fragments.Eventsfragments.EventFragment;
+import momocorp.partybus.Fragments.AddFragment;
+
 import momocorp.partybus.Fragments.Eventsfragments.EventListFragment;
 import momocorp.partybus.Fragments.Eventsfragments.EventListFragment.EventListFragmentListener;
 import momocorp.partybus.Fragments.Eventsfragments.EventSubmissionFragment;
@@ -126,11 +122,9 @@ public class EventsActivity extends AppCompatActivity
         switch (item.getItemId()) {
             //todo flesh out toolbar
             case R.id.add_event:
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.event_pager,
-                                AddFragment.newInstance(customGoogleApiClient),
-                                Fragments.ADDEVENT.name()).commit();
+                Intent intent = new Intent(this, AddActivity.class);
+                startActivity(intent);
+
                 break;
         }
         return super.onOptionsItemSelected(item);
