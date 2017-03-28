@@ -55,7 +55,6 @@ public class AddFragment extends Fragment {
         AddFragment fragment = new AddFragment();
         Bundle args = new Bundle();
         args.putParcelable(ID.CUSTOMCLIENT.name(), customGoogleApiClient);
-
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,7 +64,7 @@ public class AddFragment extends Fragment {
         Bundle args = new Bundle();
         args.putParcelable(ID.addFragmentAdapter.name(), addFragmentPagerAdapter);
         args.putParcelable(ID.eventInfo.name(), eventInfo);
-
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -73,10 +72,8 @@ public class AddFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            Log.i("Add fragment debug", "oncreate called");
-            customGoogleApiClient = (CustomGoogleApiClient) getArguments().getParcelable(ID.CUSTOMCLIENT.name());
-            eventInformation = (EventInformation) getArguments().getParcelable(ID.eventInfo.name());
-            eventInfoInterface = (EventInformation.Interface) getArguments().getParcelable(ID.addFragmentAdapter.name());
+            eventInformation = getArguments().getParcelable(ID.eventInfo.name());
+            eventInfoInterface =  getArguments().getParcelable(ID.addFragmentAdapter.name());
         }
     }
 
@@ -147,18 +144,8 @@ public class AddFragment extends Fragment {
 
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 

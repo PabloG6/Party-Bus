@@ -3,6 +3,10 @@ package momocorp.partybus.CustomObjects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 
 /**
@@ -166,6 +170,14 @@ public class EventInformation implements Parcelable{
 
     public void setAge(int age) {
         this.age = age;
+
     }
+
+    //push information from object itself
+    public void pushInformation() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.push().setValue(EventInformation.this);
+    }
+
 
 }

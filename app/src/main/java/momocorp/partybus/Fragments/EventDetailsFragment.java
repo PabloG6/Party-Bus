@@ -36,8 +36,9 @@ public class EventDetailsFragment extends Fragment {
     public static EventDetailsFragment newInstance(EventInformation eventInformation, AddFragmentPagerAdapter addFragmentPagerAdapter) {
         EventDetailsFragment fragment = new EventDetailsFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ID.addFragmentAdapter.name(), eventInformation);
+        args.putParcelable(ID.addFragmentAdapter.name(), addFragmentPagerAdapter);
         args.putParcelable(ID.eventInfo.name(), eventInformation);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -65,9 +66,9 @@ public class EventDetailsFragment extends Fragment {
                 if (b) {
                     final Dialog dialog = new Dialog(getActivity());
                     dialog.setContentView(R.layout.money_dialog);
-                    EditText price = (EditText) dialog.findViewById(R.id.price);
+                    final EditText price = (EditText) dialog.findViewById(R.id.price);
                     final Button doneButton = (Button) dialog.findViewById(R.id.done_button);
-
+                    doneButton.setEnabled(false);
                     dialog.show();
                     Window window = dialog.getWindow();
                     if (window != null) {
@@ -97,7 +98,8 @@ public class EventDetailsFragment extends Fragment {
                     doneButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-
+                            String s = price.getText().toString();
+                            eventInformation.setPrice(Double.parseDouble(s));
                             dialog.dismiss();
                         }
                     });

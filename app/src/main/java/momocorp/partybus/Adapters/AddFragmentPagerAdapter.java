@@ -217,22 +217,15 @@ public class AddFragmentPagerAdapter extends FragmentPagerAdapter implements Eve
 
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return (AddFragment) fragments.get(0);
-            case 1:
-                return (EventDetailsFragment) fragments.get(1);
 
-
-        }
-        return null;
+        return fragments.get(position);
     }
 
     @Override
     public int getCount() {
 
         Log.i("Add fragment debug", "get count");
-        return 2;
+        return fragments.size();
     }
 
     //set updated eventinformation to pass via eventInfor

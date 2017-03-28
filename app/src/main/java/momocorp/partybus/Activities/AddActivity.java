@@ -1,6 +1,7 @@
 package momocorp.partybus.Activities;
 
 import android.app.Fragment;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,11 +17,13 @@ import momocorp.partybus.Adapters.AddFragmentPagerAdapter;
 import momocorp.partybus.CustomObjects.EventInformation;
 import momocorp.partybus.Fragments.AddFragment;
 import momocorp.partybus.Fragments.EventDetailsFragment;
+import momocorp.partybus.Fragments.TimeFragment;
 import momocorp.partybus.R;
 
-public class AddActivity extends AppCompatActivity {
-
+public class AddActivity extends AppCompatActivity implements TimeFragment.OnFragmentInteractionListener {
+    ArrayList<Fragment> fragments;
     private EventInformation eventInformation = new EventInformation();
+    TimeFragment timeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +50,13 @@ public class AddActivity extends AppCompatActivity {
 
             }
         });
-        ArrayList<Fragment> fragments = new ArrayList<>();
+        fragments = new ArrayList<>();
 
         AddFragmentPagerAdapter addFragPagerAapter = new AddFragmentPagerAdapter(getFragmentManager());
         fragments.add(AddFragment.newInstance(eventInformation, addFragPagerAapter));
         fragments.add(EventDetailsFragment.newInstance(eventInformation, addFragPagerAapter));
+        timeFragment = TimeFragment.newInstance(eventInformation, addFragPagerAapter);
+        fragments.add(timeFragment);
 
         addFragPagerAapter.setFragments(fragments);
         viewPager.setAdapter(addFragPagerAapter);
@@ -62,12 +67,21 @@ public class AddActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                viewPager.setCurrentItem(viewPager.getCurrentItem()+1, true);
-
+                if (viewPager.getCurrentItem() + 1 != fragments.size() - 1) {
+                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
+                    return;
+                }
+                timeFragment.setPosition();
 
 
             }
         });
     }
 
+    @Override
+    public void onFragmentInteraction(int position) {
+        TimeFragment timeFragment = (TimeFragment) fragments.get(fragments.size()-1);
+        timeFragment.setPosition(position+1);
+
+    }
 }
