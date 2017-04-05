@@ -65,9 +65,8 @@ public class AddActivity extends AppCompatActivity implements TimeFragment.OnFra
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                if (viewPager.getCurrentItem() + 1 != fragments.size() - 1) {
+
+                if (viewPager.getCurrentItem() + 1 < fragments.size()) {
                     viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
                     return;
                 }
@@ -80,8 +79,7 @@ public class AddActivity extends AppCompatActivity implements TimeFragment.OnFra
 
     @Override
     public void onFragmentInteraction(int position) {
-        TimeFragment timeFragment = (TimeFragment) fragments.get(fragments.size()-1);
-        timeFragment.setPosition(position+1);
+
 
     }
 }

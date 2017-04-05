@@ -1,0 +1,14 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view_holder"
+    android:layout_width="300dp"
+    app:cardElevation="5dp"
+    android:layout_height="320dp"
+    android:layout_margin="20dp"
+    app:cardCornerRadius="2dp">
+
+
+
+
+</android.support.v7.widget.CardView>

@@ -31,7 +31,6 @@ public class AddFragmentPagerAdapter extends FragmentPagerAdapter implements Eve
 
     public AddFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
-        this.fragments = fragments;
     }
 
 
@@ -155,13 +154,11 @@ public class AddFragmentPagerAdapter extends FragmentPagerAdapter implements Eve
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
 
-        Log.i("Add Fragment Debug", "instantiate called");
         return super.instantiateItem(container, position);
     }
 
     @Override
     public void startUpdate(ViewGroup container) {
-        Log.i("Add fragment debug", "start update");
         super.startUpdate(container);
     }
 
@@ -169,49 +166,41 @@ public class AddFragmentPagerAdapter extends FragmentPagerAdapter implements Eve
     public void destroyItem(ViewGroup container, int position, Object object) {
         super.destroyItem(container, position, object);
 
-        Log.i("Add fragment debug", "destroy update");
     }
 
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
 
-        Log.i("Add fragment debug", "set primary item");
     }
 
     @Override
     public void finishUpdate(ViewGroup container) {
         super.finishUpdate(container);
 
-        Log.i("Add fragment debug", "finish update update");
     }
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
 
-        Log.i("Add fragment debug", "view from");
         return super.isViewFromObject(view, object);
 
     }
 
     @Override
     public Parcelable saveState() {
-
-        Log.i("Add fragment debug", "save state");
         return super.saveState();
     }
 
     @Override
     public void restoreState(Parcelable state, ClassLoader loader) {
 
-        Log.i("Add fragment debug", "restore state");
         super.restoreState(state, loader);
     }
 
     @Override
     public long getItemId(int position) {
 
-        Log.i("Add fragment debug", "get item id");
         return super.getItemId(position);
     }
 
@@ -223,8 +212,6 @@ public class AddFragmentPagerAdapter extends FragmentPagerAdapter implements Eve
 
     @Override
     public int getCount() {
-
-        Log.i("Add fragment debug", "get count");
         return fragments.size();
     }
 

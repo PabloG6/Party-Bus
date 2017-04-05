@@ -4,25 +4,19 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.Parcelable;
 import android.support.design.widget.TextInputEditText;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
 
 import momocorp.partybus.Adapters.AddFragmentPagerAdapter;
 import momocorp.partybus.CustomObjects.EventInformation;
@@ -30,18 +24,9 @@ import momocorp.partybus.Fragments.Eventsfragments.MapMethods.CustomGoogleApiCli
 import momocorp.partybus.R;
 import momocorp.partybus.misc.ID;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link AddFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link AddFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class AddFragment extends Fragment {
 
-    ArrayList<String> tags = new ArrayList<>();
-    AutoCompleteTextView hashTags;
     EventInformation.Interface eventInfoInterface;
     CustomGoogleApiClient customGoogleApiClient;
 
@@ -59,6 +44,12 @@ public class AddFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     *
+     * @param eventInfo the variable to hold the event information
+     * @param addFragmentPagerAdapter the context used to create the interface object to set the eventinformation after it's been set
+     * @return instance of fragment
+     */
     public static AddFragment newInstance(EventInformation eventInfo, AddFragmentPagerAdapter addFragmentPagerAdapter) {
         AddFragment fragment = new AddFragment();
         Bundle args = new Bundle();
@@ -80,13 +71,16 @@ public class AddFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
 
 
         final View view = inflater.inflate(R.layout.fragment_add, container, false);
+
+        //get layout that searches for the fragment
         PlaceAutocompleteFragment placeFragment = (PlaceAutocompleteFragment)
                 getChildFragmentManager().findFragmentById(R.id.search_place);
-        final TextInputEditText titleEdit = (TextInputEditText) view.findViewById(R.id.event_title);
+         TextInputEditText titleEdit = (TextInputEditText) view.findViewById(R.id.event_title);
+
         titleEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -124,7 +118,6 @@ public class AddFragment extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
 
 
     @Override
