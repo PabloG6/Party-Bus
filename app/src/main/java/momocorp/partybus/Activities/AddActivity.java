@@ -52,7 +52,7 @@ public class AddActivity extends AppCompatActivity implements TimeFragment.OnFra
         });
         fragments = new ArrayList<>();
 
-        AddFragmentPagerAdapter addFragPagerAapter = new AddFragmentPagerAdapter(getFragmentManager());
+        final AddFragmentPagerAdapter addFragPagerAapter = new AddFragmentPagerAdapter(getFragmentManager());
         fragments.add(AddFragment.newInstance(eventInformation, addFragPagerAapter));
         fragments.add(EventDetailsFragment.newInstance(eventInformation, addFragPagerAapter));
         timeFragment = TimeFragment.newInstance(eventInformation, addFragPagerAapter);
@@ -62,6 +62,23 @@ public class AddActivity extends AppCompatActivity implements TimeFragment.OnFra
         viewPager.setAdapter(addFragPagerAapter);
         tabLayout.setupWithViewPager(viewPager, true);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton back_fab = (FloatingActionButton) findViewById(R.id.back_fab);
+        back_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (addFragPagerAapter.getEnum() == AddFragmentPagerAdapter.ADD.TIME) {
+                    timeFragment.setPosition(false);
+                    return;
+                }
+                if (viewPager.getCurrentItem() > 0) {
+                    viewPager.setCurrentItem(viewPager.getCurrentItem()-1, true);
+                }
+
+
+            }
+        });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,7 +87,7 @@ public class AddActivity extends AppCompatActivity implements TimeFragment.OnFra
                     viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
                     return;
                 }
-                timeFragment.setPosition();
+                timeFragment.setPosition(true);
 
 
             }

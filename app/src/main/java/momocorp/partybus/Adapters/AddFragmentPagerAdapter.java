@@ -28,11 +28,35 @@ import momocorp.partybus.Fragments.EventDetailsFragment;
 public class AddFragmentPagerAdapter extends FragmentPagerAdapter implements EventInformation.Interface, Parcelable {
     ArrayList<Fragment> fragments;
     EventInformation eventInfo = new EventInformation();
+    public static int PAGE = 0;
+
+    //enums to know which page the add fragment is on
+   public enum ADD {
+        DAY,
+        TIME,
+        DETAILS,
+        ADD,
+        DEFAULT
+    }
+
+    public ADD getEnum() {
+        switch (PAGE) {
+            case 0:
+                return ADD.ADD;
+            case 1:
+                return ADD.DETAILS;
+            case 2:
+                return ADD.DAY;
+            case 3:
+                return ADD.TIME;
+            default:
+                return ADD.DEFAULT;
+        }
+    }
 
     public AddFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
     }
-
 
 
     protected AddFragmentPagerAdapter(Parcel in) {
@@ -206,7 +230,7 @@ public class AddFragmentPagerAdapter extends FragmentPagerAdapter implements Eve
 
     @Override
     public Fragment getItem(int position) {
-
+       PAGE = position;
         return fragments.get(position);
     }
 

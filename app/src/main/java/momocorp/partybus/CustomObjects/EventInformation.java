@@ -12,13 +12,40 @@ import java.lang.reflect.ParameterizedType;
 /**
  * Created by Pablo on 10/24/2016.
  */
-public class EventInformation implements Parcelable{
+public class EventInformation implements Parcelable {
     private double latitude;
     private double longitude;
     private String address;
     private String title;
     String pushID;
+    Date date;
+    Time time;
+
+    public Time getTime() {
+        return time;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
     private int age;
+
+
+    public void setDrinks(boolean drinks) {
+        isDrinks = drinks;
+    }
+
+
+    public boolean isDrinks() {
+        return isDrinks;
+    }
+
+    private boolean isDrinks;
 
 
     protected EventInformation(Parcel in) {
@@ -29,6 +56,8 @@ public class EventInformation implements Parcelable{
         pushID = in.readString();
         age = in.readInt();
         price = in.readDouble();
+        isDrinks = in.readByte() != 0;
+
     }
 
     public static final Creator<EventInformation> CREATOR = new Creator<EventInformation>() {
@@ -129,7 +158,22 @@ public class EventInformation implements Parcelable{
         parcel.writeString(pushID);
         parcel.writeInt(age);
         parcel.writeDouble(price);
+        parcel.writeByte((byte) (isDrinks ? 1 : 0));
+
     }
+
+    public void isDrinks(boolean isDrinks) {
+        this.isDrinks = isDrinks;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void seTime(Time time) {
+        this.time = time;
+    }
+
     //interface for EventInformation
     public interface Interface {
         void setEventInformation(EventInformation eventInformation);
@@ -139,12 +183,21 @@ public class EventInformation implements Parcelable{
         private int startMonth;
         private int startDay;
         private int startYear;
+
+        public Date(int startMonth, int startDay, int startYear) {
+            this.startMonth = startMonth;
+            this.startDay = startDay;
+            this.startYear = startYear;
+        }
+
         public void setStartMonth(int startMonth) {
             this.startMonth = startMonth;
         }
+
         public static class DBuilder {
 
         }
+
         public void setStartDay(int startDay) {
             this.startDay = startDay;
         }
@@ -180,4 +233,29 @@ public class EventInformation implements Parcelable{
     }
 
 
+    public static class Time {
+        int minute;
+        int hour;
+
+        public Time(int hour, int minute) {
+            this.minute = minute;
+            this.hour = hour;
+        }
+
+        public int getMinute() {
+            return minute;
+        }
+
+        public void setMinute(int minute) {
+            this.minute = minute;
+        }
+
+        public int getHour() {
+            return hour;
+        }
+
+        public void setHour(int hour) {
+            this.hour = hour;
+        }
+    }
 }

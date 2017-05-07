@@ -2,31 +2,33 @@ package momocorp.partybus.Fragments;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.v7.widget.SwitchCompat;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
+import android.support.v7.app.AlertDialog;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
+
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Switch;
+
+import android.widget.LinearLayout;
+import android.widget.Switch;;
 
 import momocorp.partybus.Adapters.AddFragmentPagerAdapter;
 import momocorp.partybus.CustomObjects.EventInformation;
 import momocorp.partybus.R;
 import momocorp.partybus.misc.ID;
+import momocorp.partybus.misc.NumberTextWatcher;
 
 public class EventDetailsFragment extends Fragment {
     EventInformation eventInformation;
     EventInformation.Interface eventInfoInterface;
-
+    private String current = "";
     private OnFragmentInteractionListener mListener;
 
     public EventDetailsFragment() {
@@ -56,60 +58,61 @@ public class EventDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_event_details, container, false);
-        Switch isFree = (Switch) view.findViewById(R.id.money_switch);
-        Switch isDrinks = (Switch) view.findViewById(R.id.drink_switch);
+        final Switch isFree = (Switch) view.findViewById(R.id.money_switch);
+        final Switch isDrinks = (Switch) view.findViewById(R.id.drink_switch);
 
-
+        isFree.setChecked(true);
         isFree.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    final Dialog dialog = new Dialog(getActivity());
-                    dialog.setContentView(R.layout.money_dialog);
-                    final EditText price = (EditText) dialog.findViewById(R.id.price);
-                    final Button doneButton = (Button) dialog.findViewById(R.id.done_button);
-                    doneButton.setEnabled(false);
-                    dialog.show();
-                    Window window = dialog.getWindow();
-                    if (window != null) {
-                        window.setGravity(Gravity.CENTER);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                //set edittext values
+                final EditText input = new EditText(getActivity());
+                input.setInputType(Configuration.KEYBOARD_12KEY);
+                input.addTextChangedListener(new NumberTextWatcher(input, "#,###"));
+
+                //set layout params
+                LinearLayout.LayoutParams lp = new
+                        LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                input.setLayoutParams(lp);
+
+                //set parameters of dialog builder
+                builder.setView(input);
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        isFree.setChecked(false);
                     }
-                    price.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                });
 
-                        }
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
-                        @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+                });
 
-                        }
+                builder.setTitle("Price");
+                builder.setIcon(R.drawable.ic_local_atm_blue_400_24dp);
 
-                        @Override
-                        public void afterTextChanged(Editable editable) {
-                            if (editable != null && editable.toString().length() > 0) {
-                                doneButton.setEnabled(true);
 
-                            } else {
-                                doneButton.setEnabled(false);
-                            }
-                        }
-                    });
-                    doneButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String s = price.getText().toString();
-                            eventInformation.setPrice(Double.parseDouble(s));
-                            dialog.dismiss();
-                        }
-                    });
+                Dialog dialog = builder.create();
+
+                if (!b) {
+
+                    dialog.show();
+                } else {
+                    dialog.dismiss();
                 }
+
             }
         });
         isDrinks.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
+            eventInformation.isDrinks(b);
             }
         });
         return view;
@@ -145,4 +148,5 @@ public class EventDetailsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
+
 }

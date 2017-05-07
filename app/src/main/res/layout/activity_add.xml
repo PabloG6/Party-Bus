@@ -21,9 +21,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_add"
-        />
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -32,6 +29,21 @@
         app:layout_anchorGravity="center_horizontal|bottom"
         app:srcCompat="@drawable/ic_arrow_forward_white_24dp"
         app:layout_anchor="@+id/add_viewpager"
+        app:useCompatPadding="true"
         />
+    <android.support.design.widget.FloatingActionButton
+    android:id="@+id/back_fab"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/fab_margin"
+    app:layout_anchorGravity="start|center"
+    android:layout_gravity="start|center"
+    app:useCompatPadding="true"
+    app:srcCompat="@drawable/ic_arrow_back_white_24dp"
+    app:layout_anchor="@+id/fab"
+    />
+
+    <include layout="@layout/content_add" />
+
 
 </android.support.design.widget.CoordinatorLayout>
