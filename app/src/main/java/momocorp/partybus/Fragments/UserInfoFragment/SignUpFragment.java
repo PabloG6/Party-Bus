@@ -206,12 +206,6 @@ public class SignUpFragment extends Fragment {
         return mainView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.triggerInterestFragment();
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -270,8 +264,7 @@ public class SignUpFragment extends Fragment {
                                             //ask for information about completion before destroying the fragment
                                             if (task.getResult() != null)
                                                 Log.i("Task completed", "result: " + task.getResult().toString());
-                                            mListener.triggerInterestFragment();
-
+                                                mListener.triggerEventsActivity();
 
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
@@ -304,7 +297,7 @@ public class SignUpFragment extends Fragment {
 
     public interface SignUpFragmentListener {
         // TODO: Update argument type and name
-        void triggerInterestFragment();
+        void triggerEventsActivity();
     }
 
 

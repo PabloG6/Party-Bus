@@ -161,6 +161,10 @@ public class CustomGoogleApiClient implements ConnectionCallbacks,
     /**
      * @return last known location based on other application locations
      */
+
+    public GoogleApiClient googleApiClient() {
+        return googleApiClient;
+    }
     public Location getLastLocationFromProvider() {
         LocationManager mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = mLocationManager.getProviders(true);

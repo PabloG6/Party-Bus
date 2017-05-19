@@ -20,6 +20,7 @@ public class EventInformation implements Parcelable {
     String pushID;
     Date date;
     Time time;
+    private String placeId;
 
     public Time getTime() {
         return time;
@@ -55,7 +56,7 @@ public class EventInformation implements Parcelable {
         title = in.readString();
         pushID = in.readString();
         age = in.readInt();
-        price = in.readDouble();
+        price = in.readString();
         isDrinks = in.readByte() != 0;
 
     }
@@ -76,15 +77,15 @@ public class EventInformation implements Parcelable {
         return age;
     }
 
-    public double getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    private double price;
+    private String price;
 
 
     // TODO: 1/11/2017 store latitude and longitude as a latlng object
@@ -157,7 +158,7 @@ public class EventInformation implements Parcelable {
         parcel.writeString(title);
         parcel.writeString(pushID);
         parcel.writeInt(age);
-        parcel.writeDouble(price);
+        parcel.writeString(price);
         parcel.writeByte((byte) (isDrinks ? 1 : 0));
 
     }
@@ -170,9 +171,14 @@ public class EventInformation implements Parcelable {
         this.date = date;
     }
 
-    public void seTime(Time time) {
-        this.time = time;
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
 
     //interface for EventInformation
     public interface Interface {
@@ -183,7 +189,9 @@ public class EventInformation implements Parcelable {
         private int startMonth;
         private int startDay;
         private int startYear;
+    public Date() {
 
+    }
         public Date(int startMonth, int startDay, int startYear) {
             this.startMonth = startMonth;
             this.startDay = startDay;
@@ -234,9 +242,11 @@ public class EventInformation implements Parcelable {
 
 
     public static class Time {
-        int minute;
-        int hour;
+        private int minute;
+        private int hour;
+        public Time() {
 
+        }
         public Time(int hour, int minute) {
             this.minute = minute;
             this.hour = hour;

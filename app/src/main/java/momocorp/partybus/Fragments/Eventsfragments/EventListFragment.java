@@ -15,6 +15,7 @@ import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,7 +26,11 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -46,7 +51,7 @@ import momocorp.partybus.misc.ID;
  * create an instance of this fragment.
  */
 public class EventListFragment extends Fragment implements LoadingCacheListener {
-
+    FirebaseRecyclerAdapter<EventInformation, EventListAdapter.EventViewHolder> adapter;
     private CustomGoogleApiClient customGoogleApiClient;
     LinearLayoutManager linearLayoutManager;
     Stack<EventInformation> events;
@@ -77,7 +82,6 @@ public class EventListFragment extends Fragment implements LoadingCacheListener 
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.customGoogleApiClient = getArguments().getParcelable(ID.CUSTOMCLIENT.name());
-
 
 
         }
@@ -127,7 +131,6 @@ public class EventListFragment extends Fragment implements LoadingCacheListener 
 
         View view = inflater.inflate(R.layout.fragment_event_list, container, false);
         listRecyclerView = (RecyclerView) view.findViewById(R.id.event_list_recycler);
-        events = new Stack<>();
         EventListAdapter.Builder builder = new EventListAdapter.Builder()
                 .setApiClient(customGoogleApiClient).setContext(getActivity()).setEvents(events).
                         setLoadingListener(this).setFragment(this);
@@ -136,22 +139,27 @@ public class EventListFragment extends Fragment implements LoadingCacheListener 
         listRecyclerView.setAdapter(eventListAdapter);
         DefaultItemAnimator animator = new DefaultItemAnimator();
         animator.setAddDuration(500);
+        linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
         listRecyclerView.setItemAnimator(animator);
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        DividerItemDecoration itemDecoration =
+                new DividerItemDecoration(listRecyclerView.getContext(), linearLayoutManager.getOrientation());
 
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                eventListAdapter.updateStuff();
-            }
-        });
-        refreshLayout.setRefreshing(false);
-
-
+        listRecyclerView.addItemDecoration(itemDecoration);
+        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference("events");
         listRecyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new FirebaseRecyclerAdapter<EventInformation, EventListAdapter.EventViewHolder>(EventInformation.class, R.layout.event_card_layout, EventListAdapter.EventViewHolder.class, dataRef) {
+            @Override
+            protected void populateViewHolder(EventListAdapter.EventViewHolder viewHolder, EventInformation model, int position) {
+                viewHolder.setLocation(model.getAddress());
+                viewHolder.setEventTitle(model.getTitle());
+                viewHolder.setPrice(model.getPrice());
 
+            }
+        };
+
+
+        listRecyclerView.setAdapter(adapter);
         return view;
     }
 
@@ -183,47 +191,6 @@ public class EventListFragment extends Fragment implements LoadingCacheListener 
         super.onDetach();
 
     }
-
-//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//    void showProgress(View progressDialog) {
-//        if (progressDialog != null) {
-//            int viewHeight = progressDialog.getMeasuredHeight();
-//            int viewWidth = progressDialog.getMeasuredWidth();
-//            float finalRadius = (float) Math.hypot(viewHeight, viewWidth);
-//
-//            loading.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotation));
-//            Animator animator =
-//                    ViewAnimationUtils.
-//                            createCircularReveal
-//                                    (progressDialog, viewWidth, viewHeight, 0, finalRadius);
-//            progressDialog.setVisibility(View.VISIBLE);
-//            animator.addListener(new Animator.AnimatorListener() {
-//                @Override
-//                public void onAnimationStart(Animator animator) {
-//
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animator animator) {
-//                }
-//
-//                @Override
-//                public void onAnimationCancel(Animator animator) {
-//
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animator animator) {
-//
-//                }
-//            });
-//
-//            animator.start();
-//
-//        }
-//    }
-
-
     @Override
     public boolean loadingStart() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -242,7 +209,7 @@ public class EventListFragment extends Fragment implements LoadingCacheListener 
     @Override
     public boolean loadingFinished() {
 
-        refreshLayout.setRefreshing(false);
+//        refreshLayout.setRefreshing(false);
         listRecyclerView.scrollToPosition(events.size() - 1);
         //make sure at least four seconds have passed before the animation is complete
         return false;

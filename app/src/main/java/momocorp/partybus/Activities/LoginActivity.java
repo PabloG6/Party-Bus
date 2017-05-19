@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import momocorp.partybus.Activities.EventsActivity;
+import momocorp.partybus.Adapters.EventListAdapter;
 import momocorp.partybus.Fragments.UserInfoFragment.InterestFragment;
 import momocorp.partybus.Fragments.UserInfoFragment.LoginFragment;
 import momocorp.partybus.Fragments.UserInfoFragment.SignUpFragment;
@@ -78,12 +79,11 @@ public class LoginActivity extends AppCompatActivity implements
 
 
     @Override
-    public void triggerInterestFragment() {
+    public void triggerEventsActivity() {
         //replace fragment
-        Fragment interestFragment = new InterestFragment();
-        String interestString = getResources().getString(R.string.interest_fragment);
-        getFragmentManager().beginTransaction().replace(R.id.login_container, interestFragment,
-                interestString).addToBackStack(interestString).commit();
+        Intent intent = new Intent(context, EventsActivity.class);
+        startActivity(intent);
+
     }
 
     @Override

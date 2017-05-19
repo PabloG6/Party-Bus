@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import momocorp.partybus.Fragments.Eventsfragments.EventSubmissionFragment;
 import momocorp.partybus.Fragments.Eventsfragments.FragmentInterfaces.FragmentInterface;
 import momocorp.partybus.Fragments.Eventsfragments.MapMethods.CustomGoogleApiClient;
 import momocorp.partybus.R;
+import momocorp.partybus.misc.ID;
 
 
 public class EventsActivity extends AppCompatActivity
@@ -82,6 +84,7 @@ public class EventsActivity extends AppCompatActivity
         customGoogleApiClient.setGoogleApiClient(googleApiClient);
 
 
+
         eventSubFragmentTag = getResources().getString(R.string.event_submission);
         toolbar = (Toolbar) findViewById(R.id.event_toolbar);
         if (toolbar != null) {
@@ -107,7 +110,16 @@ public class EventsActivity extends AppCompatActivity
                     .replace(R.id.event_pager, savedContent)
                     .commit();
         }
+        FloatingActionButton addEvent = (FloatingActionButton) findViewById(R.id.add_event);
+        addEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EventsActivity.this, AddEventActivity.class);
+                intent.putExtra(ID.CUSTOMCLIENT.name(), customGoogleApiClient);
+                startActivity(intent);
 
+            }
+        });
 
     }
 
@@ -122,7 +134,8 @@ public class EventsActivity extends AppCompatActivity
         switch (item.getItemId()) {
             //todo flesh out toolbar
             case R.id.add_event:
-                Intent intent = new Intent(this, AddActivity.class);
+                Intent intent = new Intent(this, AddEventActivity.class);
+                intent.putExtra(ID.CUSTOMCLIENT.name(), customGoogleApiClient);
                 startActivity(intent);
 
                 break;

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="momocorp.partybus.Activities.AddEventActivity"
+    tools:showIn="@layout/activity_add_event"
+    android:background="@color/tw__composer_black">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        app:cardElevation="3dp">
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/place_auto_complete_fragment"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            />
+
+    </android.support.v7.widget.CardView>
+        <EditText
+            android:layout_width="match_parent"
+            android:textColorHint="@color/white"
+
+            android:hint="Title"
+            android:id="@+id/event_title"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+
+            />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/price"
+        android:textColor="@color/white"
+android:textColorHint="@color/white"
+        android:hint="Price"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter Date"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+
+        android:padding="10sp"
+        android:clickable="true"
+        android:id="@+id/enter_date"
+
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/black"/>
+    <TextView
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter Time"
+        android:textSize="18sp"
+        android:padding="10dp"
+        android:clickable="true"
+        android:id="@+id/enter_time"
+        />
+
+<View
+    android:layout_width="match_parent"
+    android:layout_height="0.5dp"
+    android:background="@android:color/black"/>
+
+<Switch
+    android:textColor="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Drinks Available?"
+    android:id="@+id/drinks_available"
+    android:textOn="Yes"
+    android:padding="10dp"
+    android:textOff="No"/>
+
+</LinearLayout>

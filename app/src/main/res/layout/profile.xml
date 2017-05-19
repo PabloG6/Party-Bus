@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<de.hdodenhof.circleimageview.CircleImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:id="@+id/event_picture"
+
+    tools:showIn="@layout/event_card_layout"
+    android:layout_margin="5dp"
+    android:src="@drawable/dummy_profile" />
+
+
